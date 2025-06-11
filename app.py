@@ -34,6 +34,49 @@ def preprocess_text(text):
 
 # Load the models when the app starts
 vectorizer, model = load_model_and_vectorizer()
+=======
+# Function to load data, train model, and return vectorizer and model
+# --- IMPORTANT CHANGES ARE IN THIS FUNCTION ---
+@st.cache_data
+def load_and_train_model():
+    # URL pointing to the ZIP file
+    DATA_URL = 'http://cs.stanford.edu/people/alecmgo/trainingandtestdata.zip'
+    
+    # --- NEW CODE TO HANDLE THE ZIP FILE ---
+    # Download the ZIP file from the URL
+    r = requests.get(DATA_URL)
+    # Create a file-like object in memory from the content
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    
+    # Define the column names for the dataset
+    column_names = ['target', 'id', 'date', 'flag', 'user', 'text']
+    
+    # Extract and read the correct training CSV file from the ZIP archive
+    df = pd.read_csv(
+        z.open('training.1600000.processed.noemoticon.csv'), # Specify the filename inside the ZIP
+        encoding='latin-1',
+        header=None,
+        names=column_names
+    )
+
+    # The rest of your function remains the same
+    data = df[['text', 'target']]
+    data_sample = data.sample(n=3500, random_state=42)
+    data_sample['cleaned_text'] = data_sample['text'].apply(preprocess_text)
+    data_sample['sentiment'] = data_sample['target'].map({0: 'negative', 4: 'positive'})
+
+    vectorizer = TfidfVectorizer(max_features=5000)
+    X = vectorizer.fit_transform(data_sample['cleaned_text'])
+    y = data_sample['sentiment']
+
+    model = MultinomialNB()
+    model.fit(X, y)
+
+    return vectorizer, model
+
+# Load the trained model and vectorizer
+with st.spinner('Downloading data and training model... This may take a minute on first run.'):
+    vectorizer, model = load_and_train_model()
 
 
 # --- Streamlit App Interface (No changes here) ---
@@ -66,3 +109,4 @@ if st.button("Analyze Sentiment"):
 
 st.markdown("---")
 st.write("AI model trained on the Sentiment140 dataset.")
+st.markdown("Developed by Saif. AI model is trained on the Sentiment140 dataset. **The Dataset includes 1.6 Million tweets!**")
