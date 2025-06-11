@@ -59,7 +59,7 @@ def load_and_train_model():
 
     # The rest of your function remains the same
     data = df[['text', 'target']]
-    data_sample = data.sample(n=500000, random_state=42)
+    data_sample = data.sample(n=3000, random_state=42)
     data_sample['cleaned_text'] = data_sample['text'].apply(preprocess_text)
     data_sample['sentiment'] = data_sample['target'].map({0: 'negative', 4: 'positive'})
 
@@ -107,4 +107,5 @@ if st.button("Analyze Sentiment"):
         st.warning("Please enter a message to analyze.")
 
 st.markdown("---")
-st.markdown("Developed by Saif. AI model is trained on the Sentiment140 dataset. **The Dataset includes 1.6 Million tweets!**")
+st.markdown("Developed by Saif.")
+st.markdown("AI model is trained on the Sentiment140 dataset. **The Dataset includes 1.6 Million tweets!**")
