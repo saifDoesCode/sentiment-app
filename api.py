@@ -69,6 +69,10 @@ def predict_sentiment(request: SentimentRequest):
     return SentimentResponse(sentiment=prediction, confidence=confidence)
 
 # Health check endpoint
+
+# --- Add this new line ---
+@app.head("/")
+# --- This line was already here ---
 @app.get("/")
 def read_root():
     return {"status": "Sentiment Analysis API is running."}
