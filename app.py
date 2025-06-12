@@ -52,9 +52,9 @@ if st.button("Analyze Sentiment"):
 
         st.subheader("Analysis Result")
         if prediction == 'positive':
-            st.success(f"Noor would say this 😊")
+            st.success(f"Positive 😊")
         else:
-            st.error(f"Hassan bhai would say this 😠")
+            st.error(f"Negative 😠")
 
         st.subheader("Prediction Confidence")
         st.write(f"Negative: {prediction_proba[0][0]*100:.2f}%")
