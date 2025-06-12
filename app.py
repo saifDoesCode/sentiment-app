@@ -2,16 +2,12 @@ import streamlit as st
 import re
 import nltk
 from nltk.corpus import stopwords
-import joblib # Import joblib to load our models
+import joblib 
 from textblob import TextBlob
 
-# --- Page Configuration ---
 st.set_page_config(page_title="Message Sentiment Analyzer", page_icon="💬")
 
-# --- Model Loading ---
 
-# Load the pre-trained vectorizer and model
-# This is much faster and uses less memory than training from scratch
 @st.cache_resource
 def load_model_and_vectorizer():
     vectorizer = joblib.load('vectorizer.joblib')
@@ -19,13 +15,10 @@ def load_model_and_vectorizer():
     return vectorizer, model
 
 def preprocess_text(text):
-    # --- NEW STEP: SPELL CORRECTION ---
-    # Convert the text to a TextBlob object
+
     blob = TextBlob(str(text))
-    # Correct the spelling
     corrected_text = str(blob.correct())
 
-    # --- The rest of the function is the same ---
     text = corrected_text.lower()
     text = re.sub(r'@\w+', '', text)
     text = re.sub(r'http\S+', '', text)
@@ -39,11 +32,9 @@ def preprocess_text(text):
     words = [word for word in words if word not in stop_words]
     return ' '.join(words)
 
-# Load the models when the app starts
 vectorizer, model = load_model_and_vectorizer()
 
 
-# --- Streamlit App Interface ---
 st.title("💬 Message Sentiment Analyzer")
 st.write(
     "Enter a message (like a text, tweet, or chat) to see if its tone is "
@@ -61,9 +52,9 @@ if st.button("Analyze Sentiment"):
 
         st.subheader("Analysis Result")
         if prediction == 'positive':
-            st.success(f"Sentiment: Positive 😊")
+            st.success(f"Noor would say this 😊")
         else:
-            st.error(f"Sentiment: Negative 😠")
+            st.error(f"Hassan bhai would say this 😠")
 
         st.subheader("Prediction Confidence")
         st.write(f"Negative: {prediction_proba[0][0]*100:.2f}%")

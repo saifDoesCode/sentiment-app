@@ -7,7 +7,7 @@ from sklearn.naive_bayes import MultinomialNB
 import requests
 import zipfile
 import io
-import joblib # A library for saving and loading models
+import joblib 
 
 print("Downloading dataset...")
 DATA_URL = 'http://cs.stanford.edu/people/alecmgo/trainingandtestdata.zip'
